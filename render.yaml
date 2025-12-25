@@ -1,0 +1,31 @@
+services:
+  # Backend API
+  - type: web
+    name: layover-backend
+    runtime: node
+    region: oregon
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: REDIS_URL
+        fromDatabase:
+          name: layover-redis
+          property: connectionString
+      - key: CORS_ORIGIN
+        value: https://e976da6e.layover-app.pages.dev
+      - key: APP_URL
+        value: https://e976da6e.layover-app.pages.dev
+
+databases:
+  # Redis database
+  - name: layover-redis
+    region: oregon
+    plan: free
+    databaseName: layover
+    user: layover
