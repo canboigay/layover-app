@@ -5,6 +5,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { redisClient, connectRedis } from './config/redis.js';
 import sessionRoutes from './routes/sessions.js';
+import profileRoutes from './routes/profiles.js';
 import { handleSocketConnection } from './sockets/index.js';
 
 dotenv.config();
@@ -28,6 +29,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/sessions', sessionRoutes);
+app.use('/api/profiles', profileRoutes);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', redis: redisClient.isOpen });

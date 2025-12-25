@@ -58,7 +58,7 @@ function JoinSession() {
     return (
       <div className="join-session">
         <div className="disclaimer-container">
-          <h2>⚠️ Important Notice</h2>
+          <h2>Important Notice</h2>
           
           <div className="disclaimer-content">
             <h3>FAA Compliance & Off-Duty Use Only</h3>

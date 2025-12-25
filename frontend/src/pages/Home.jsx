@@ -8,6 +8,9 @@ function Home() {
     <div className="home">
       <div className="home-container">
         <div className="home-header">
+          <button className="btn-profile" onClick={() => navigate('/profile')}>
+            Profile
+          </button>
           <h1>Layover</h1>
           <p>Stay connected with your crew during layovers</p>
         </div>

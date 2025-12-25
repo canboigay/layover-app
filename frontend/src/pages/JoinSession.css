@@ -4,16 +4,17 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(180deg, #E8F4F8 0%, #FFFFFF 100%);
 }
 
 .disclaimer-container {
   background: white;
   padding: 2rem;
-  border-radius: 1rem;
+  border-radius: 0;
   max-width: 600px;
   width: 100%;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  border: 4px solid #000;
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.1);
 }
 
 .disclaimer-container h2 {

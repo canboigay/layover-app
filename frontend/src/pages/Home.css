@@ -19,6 +19,30 @@
 
 .home-header {
   margin-bottom: 3rem;
+  position: relative;
+}
+
+.btn-profile {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #FF6B2C;
+  color: white;
+  border: 2px solid #000;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+}
+
+.btn-profile:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
 }
 
 .home-header h1 {

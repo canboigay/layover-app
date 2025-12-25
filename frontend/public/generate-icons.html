@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<body>
+<canvas id="canvas192" width="192" height="192"></canvas>
+<canvas id="canvas512" width="512" height="512"></canvas>
+<script>
+// 192x192 icon
+const canvas192 = document.getElementById('canvas192');
+const ctx192 = canvas192.getContext('2d');
+ctx192.fillStyle = '#FF6B2C';
+ctx192.fillRect(0, 0, 192, 192);
+ctx192.fillStyle = '#FFFFFF';
+ctx192.font = 'bold 100px Arial';
+ctx192.textAlign = 'center';
+ctx192.textBaseline = 'middle';
+ctx192.fillText('L', 96, 96);
+
+// 512x512 icon  
+const canvas512 = document.getElementById('canvas512');
+const ctx512 = canvas512.getContext('2d');
+ctx512.fillStyle = '#FF6B2C';
+ctx512.fillRect(0, 0, 512, 512);
+ctx512.fillStyle = '#FFFFFF';
+ctx512.font = 'bold 280px Arial';
+ctx512.textAlign = 'center';
+ctx512.textBaseline = 'middle';
+ctx512.fillText('L', 256, 256);
+
+// Download links
+canvas192.toBlob(blob => {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'icon-192.png';
+  a.click();
+});
+
+setTimeout(() => {
+  canvas512.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'icon-512.png';
+    a.click();
+  });
+}, 1000);
+</script>
+</body>
+</html>

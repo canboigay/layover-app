@@ -15,20 +15,18 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at top right, rgba(139, 92, 246, 0.3), transparent 50%),
-              radial-gradient(circle at bottom left, rgba(236, 72, 153, 0.3), transparent 50%);
+  background: linear-gradient(180deg, #E8F4F8 0%, #FFFFFF 100%);
   z-index: 0;
 }
 
 .form-container, .session-created {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
+  background: white;
   padding: 2rem;
-  border-radius: var(--radius-lg);
+  border-radius: 0;
   max-width: 500px;
   width: 100%;
-  box-shadow: var(--shadow-xl);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 4px solid #000;
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.1);
   position: relative;
   z-index: 1;
   animation: slideUp 0.4s ease;

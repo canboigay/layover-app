@@ -3,6 +3,7 @@ import Home from './pages/Home';
 import CreateSession from './pages/CreateSession';
 import JoinSession from './pages/JoinSession';
 import Session from './pages/Session';
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/create" element={<CreateSession />} />
         <Route path="/join/:sessionId?" element={<JoinSession />} />
         <Route path="/session/:sessionId" element={<Session />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

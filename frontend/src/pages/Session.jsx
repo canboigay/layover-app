@@ -238,6 +238,41 @@ function Session() {
     return `${hours}h ago`;
   };
 
+  const handleShareLink = async () => {
+    const joinUrl = `${window.location.origin}/join/${sessionId}`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Join Layover Session',
+          text: 'Join my crew layover session',
+          url: joinUrl
+        });
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          copyToClipboard(joinUrl);
+        }
+      }
+    } else {
+      copyToClipboard(joinUrl);
+    }
+  };
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+      alert('Link copied to clipboard!');
+    }).catch(() => {
+      // Fallback for older browsers
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      alert('Link copied to clipboard!');
+    });
+  };
+
   if (!session) {
     return (
       <div className="session-loading">
@@ -254,16 +289,22 @@ function Session() {
         <div className="session-info">
           <h2>Layover Session</h2>
           <p className="session-id">ID: {sessionId}</p>
-          <p className="time-remaining">⏱️ {timeRemaining}</p>
+          <p className="time-remaining">{timeRemaining}</p>
         </div>
         
         <div className="session-controls">
+          <button 
+            className="btn-secondary"
+            onClick={handleShareLink}
+          >
+            Share Link
+          </button>
           <button 
             className="btn-location"
             onClick={toggleLocationSharing}
             style={{ background: locationSharing ? '#10b981' : '#6b7280' }}
           >
-            📍 {locationSharing ? 'Sharing Location' : 'Share Location'}
+            {locationSharing ? 'Sharing Location' : 'Share Location'}
           </button>
         </div>
       </div>
@@ -273,19 +314,19 @@ function Session() {
           className={`tab ${activeTab === 'chat' ? 'active' : ''}`}
           onClick={() => setActiveTab('chat')}
         >
-          💬 Chat
+          Chat
         </button>
         <button 
           className={`tab ${activeTab === 'map' ? 'active' : ''}`}
           onClick={() => setActiveTab('map')}
         >
-          🗺️ Map
+          Map
         </button>
         <button 
           className={`tab ${activeTab === 'crew' ? 'active' : ''}`}
           onClick={() => setActiveTab('crew')}
         >
-          👥 Crew ({session.members.length})
+          Crew ({session.members.length})
         </button>
       </div>
 
@@ -295,21 +336,18 @@ function Session() {
           className={`tab ${activeTab === 'chat' ? 'active' : ''}`}
           onClick={() => setActiveTab('chat')}
         >
-          <span style={{fontSize: '1.5rem'}}>💬</span>
           <span>Chat</span>
         </button>
         <button 
           className={`tab ${activeTab === 'map' ? 'active' : ''}`}
           onClick={() => setActiveTab('map')}
         >
-          <span style={{fontSize: '1.5rem'}}>🗺️</span>
           <span>Map</span>
         </button>
         <button 
           className={`tab ${activeTab === 'crew' ? 'active' : ''}`}
           onClick={() => setActiveTab('crew')}
         >
-          <span style={{fontSize: '1.5rem'}}>👥</span>
           <span>Crew</span>
         </button>
       </div>
@@ -357,7 +395,7 @@ function Session() {
         {activeTab === 'map' && (
           <div className="map-view">
             <div className="map-notice">
-              <p>📍 Location sharing is voluntary and for safety coordination only</p>
+              <p>Location sharing is voluntary and for safety coordination only</p>
             </div>
             <MapContainer 
               center={getMapCenter()} 

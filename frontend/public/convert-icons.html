@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h2>Generating icons...</h2>
+<script>
+async function convertSvg() {
+  const svgData = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#FF6B2C"/>
+  <g fill="#FFFFFF">
+    <rect x="140" y="100" width="80" height="280" rx="10"/>
+    <rect x="140" y="300" width="240" height="80" rx="10"/>
+    <path d="M 180 100 L 160 40 L 200 40 Z"/>
+    <ellipse cx="300" cy="340" rx="60" ry="30" opacity="0.3"/>
+    <circle cx="180" cy="150" r="12" fill="#FF6B2C"/>
+    <circle cx="180" cy="200" r="12" fill="#FF6B2C"/>
+    <circle cx="180" cy="250" r="12" fill="#FF6B2C"/>
+  </g>
+  <g stroke="#FFB81C" stroke-width="8" stroke-linecap="round" opacity="0.6">
+    <line x1="400" y1="320" x2="440" y2="320"/>
+    <line x1="400" y1="360" x2="440" y2="360"/>
+  </g>
+</svg>`;
+
+  const blob = new Blob([svgData], { type: 'image/svg+xml' });
+  const url = URL.createObjectURL(blob);
+  const img = new Image();
+  
+  img.onload = () => {
+    // Generate 192x192
+    const canvas192 = document.createElement('canvas');
+    canvas192.width = 192;
+    canvas192.height = 192;
+    const ctx192 = canvas192.getContext('2d');
+    ctx192.drawImage(img, 0, 0, 192, 192);
+    
+    canvas192.toBlob(blob => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'icon-192.png';
+      a.click();
+      document.body.innerHTML += '<p>✓ Generated icon-192.png</p>';
+    });
+    
+    // Generate 512x512
+    setTimeout(() => {
+      const canvas512 = document.createElement('canvas');
+      canvas512.width = 512;
+      canvas512.height = 512;
+      const ctx512 = canvas512.getContext('2d');
+      ctx512.drawImage(img, 0, 0, 512, 512);
+      
+      canvas512.toBlob(blob => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'icon-512.png';
+        a.click();
+        document.body.innerHTML += '<p>✓ Generated icon-512.png</p>';
+        document.body.innerHTML += '<p><strong>Move both icons to the public folder!</strong></p>';
+      });
+    }, 500);
+  };
+  
+  img.src = url;
+}
+
+convertSvg();
+</script>
+</body>
+</html>
