@@ -1,19 +1,30 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { QRCodeSVG } from 'qrcode.react';
 import { getSession } from '../services/api';
 import socketService from '../services/socket';
 import 'leaflet/dist/leaflet.css';
 import './Session.css';
 
-// Fix for default marker icons in react-leaflet
+// Custom marker icon with profile photos
 import L from 'leaflet';
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-});
+
+// Create custom divIcon for profile photos
+const createProfileIcon = (photoUrl, name) => {
+  return L.divIcon({
+    className: 'custom-marker',
+    html: `
+      <div class="marker-container">
+        <div class="marker-photo" style="background-image: url(${photoUrl || '/icon-192.png'});"></div>
+        <div class="marker-pin"></div>
+      </div>
+    `,
+    iconSize: [50, 60],
+    iconAnchor: [25, 60],
+    popupAnchor: [0, -60]
+  });
+};
 
 function Session() {
   const { sessionId } = useParams();
@@ -26,6 +37,7 @@ function Session() {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [activeTab, setActiveTab] = useState('chat');
   const [timeRemaining, setTimeRemaining] = useState('');
+  const [showQR, setShowQR] = useState(false);
   const messagesEndRef = useRef(null);
   const locationIntervalRef = useRef(null);
 
@@ -295,6 +307,12 @@ function Session() {
         <div className="session-controls">
           <button 
             className="btn-secondary"
+            onClick={() => setShowQR(true)}
+          >
+            QR Code
+          </button>
+          <button 
+            className="btn-secondary"
             onClick={handleShareLink}
           >
             Share Link
@@ -406,22 +424,40 @@ function Session() {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              {session.members.map(member => (
-                member.locationSharing && member.lastLocation?.lat && member.lastLocation?.lng && (
+              {session.members.map(member => {
+                if (!member.locationSharing || !member.lastLocation?.lat || !member.lastLocation?.lng) {
+                  return null;
+                }
+                
+                const icon = createProfileIcon(member.photoUrl, member.name);
+                
+                return (
                   <Marker 
                     key={member.userId}
                     position={[member.lastLocation.lat, member.lastLocation.lng]}
+                    icon={icon}
                   >
                     <Popup>
-                      <strong>{member.name}</strong>
-                      {member.airline && <p>{member.airline}</p>}
-                      <p className="location-time">
-                        Updated: {formatLocationTime(member.lastLocation.updatedAt)}
-                      </p>
+                      <div className="marker-popup">
+                        {member.photoUrl && (
+                          <img 
+                            src={member.photoUrl} 
+                            alt={member.name} 
+                            className="popup-photo"
+                          />
+                        )}
+                        <strong>{member.name}</strong>
+                        {member.airline && (
+                          <span className="popup-airline">{member.airline}</span>
+                        )}
+                        <p className="location-time">
+                          Updated: {formatLocationTime(member.lastLocation.updatedAt)}
+                        </p>
+                      </div>
                     </Popup>
                   </Marker>
-                )
-              ))}
+                );
+              })}
             </MapContainer>
           </div>
         )}
@@ -467,6 +503,27 @@ function Session() {
           Leave Session
         </button>
       </div>
+
+      {/* QR Code Modal */}
+      {showQR && (
+        <div className="qr-modal-overlay" onClick={() => setShowQR(false)}>
+          <div className="qr-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Scan to Join</h3>
+            <div className="qr-code-container">
+              <QRCodeSVG 
+                value={`${window.location.origin}/join/${sessionId}`}
+                size={250}
+                level="H"
+                includeMargin={true}
+              />
+            </div>
+            <p className="qr-modal-id">Session ID: {sessionId}</p>
+            <button className="btn-close" onClick={() => setShowQR(false)}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,0 +1,312 @@
+.landing {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #E8F4F8 0%, #FFFFFF 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Retro stripe decorations - sophisticated diagonal lines */
+.retro-stripes {
+  position: fixed;
+  top: -10%;
+  right: -5%;
+  width: 120%;
+  height: 120%;
+  transform: rotate(-12deg);
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.stripe {
+  position: absolute;
+  width: 100%;
+  height: 80px;
+  left: 0;
+}
+
+.stripe-1 {
+  top: 20%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 107, 44, 0.12) 50%, transparent 100%);
+}
+
+.stripe-2 {
+  top: calc(20% + 120px);
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 184, 28, 0.18) 50%, transparent 100%);
+}
+
+.stripe-3 {
+  top: calc(20% + 240px);
+  background: linear-gradient(90deg, transparent 0%, rgba(200, 16, 46, 0.12) 50%, transparent 100%);
+}
+
+.landing-hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+
+.hero-content {
+  z-index: 2;
+  animation: fadeInUp 0.8s ease;
+}
+
+.logo-badge {
+  display: inline-block;
+  background: #FFB81C;
+  color: #000;
+  padding: 0.5rem 1.5rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.875rem;
+  letter-spacing: 0.2em;
+  border: 3px solid #000;
+  margin-bottom: 1rem;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+  transform: rotate(-2deg);
+}
+
+.hero-title {
+  font-family: 'Bebas Neue', 'Arial Black', sans-serif;
+  font-size: clamp(4rem, 15vw, 10rem);
+  color: #000;
+  margin: 0;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  line-height: 0.85;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title-top {
+  color: #FF6B2C;
+  text-shadow: 6px 6px 0 rgba(0, 0, 0, 0.1);
+}
+
+.title-bottom {
+  color: #000;
+  text-shadow: 6px 6px 0 rgba(255, 107, 44, 0.2);
+  margin-top: -0.2em;
+}
+
+.hero-subtitle {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  color: #FF6B2C;
+  margin: 1rem 0 2rem 0;
+  letter-spacing: 0.1em;
+  font-weight: 400;
+}
+
+.btn-cta {
+  background: #FF6B2C;
+  color: white;
+  border: 3px solid #000;
+  padding: 1.25rem 3rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.1em;
+  box-shadow: 6px 6px 0 #000;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn-arrow {
+  font-size: 1.75rem;
+  transition: transform 0.2s;
+}
+
+.btn-cta:hover .btn-arrow {
+  transform: translateX(5px);
+}
+
+.btn-cta:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0 #000;
+}
+
+.btn-cta:active {
+  transform: translate(3px, 3px);
+  box-shadow: 3px 3px 0 #000;
+}
+
+.hero-graphic {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.plane-icon {
+  width: 500px;
+  height: 500px;
+  color: #000;
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(-10deg);
+  }
+  50% {
+    transform: translateY(-30px) rotate(-5deg);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.features-section {
+  padding: 4rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.feature-card {
+  background: white;
+  padding: 2rem;
+  border: 4px solid #000;
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #FF6B2C 0%, #FFB81C 100%);
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+
+.feature-card:hover {
+  transform: translate(-4px, -4px);
+  box-shadow: 12px 12px 0 rgba(0, 0, 0, 0.15);
+}
+
+.feature-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 1.5rem auto;
+  color: #FF6B2C;
+}
+
+.feature-card h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.75rem;
+  color: #FF6B2C;
+  margin: 0 0 0.5rem 0;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.feature-card p {
+  color: #475569;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.cta-section {
+  padding: 6rem 2rem;
+  text-align: center;
+  background: linear-gradient(180deg, #FFFFFF 0%, #E8F4F8 100%);
+}
+
+.cta-section h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: #000;
+  margin: 0 0 2rem 0;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.btn-cta-large {
+  background: linear-gradient(135deg, #FF6B2C 0%, #E85A1F 100%);
+  color: white;
+  border: 4px solid #000;
+  padding: 1.5rem 4rem;
+  font-size: 2rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.1em;
+  box-shadow: 0 8px 0 #C8102E, 0 12px 24px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+
+.btn-cta-large:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 0 #C8102E, 0 16px 32px rgba(0, 0, 0, 0.35);
+}
+
+.btn-cta-large:active {
+  transform: translateY(4px);
+  box-shadow: 0 4px 0 #C8102E, 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+.disclaimer {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin-top: 2rem;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .landing-hero {
+    padding: 1rem;
+  }
+
+  .features-section {
+    grid-template-columns: 1fr;
+    padding: 2rem 1rem;
+  }
+
+  .cta-section {
+    padding: 3rem 1rem;
+  }
+
+  .btn-cta-large {
+    padding: 1.25rem 2.5rem;
+    font-size: 1.5rem;
+  }
+
+  .plane-icon {
+    font-size: 15rem;
+  }
+}

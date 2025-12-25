@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getProfile, updateProfile, uploadProfilePhoto, getInitials } from '../services/profile';
+import { airlines, getAirlineByName } from '../data/airlines';
 import './Profile.css';
 
 function Profile() {
@@ -26,7 +27,7 @@ function Profile() {
 
     try {
       const photoUrl = await uploadProfilePhoto(file);
-      const updated = updateProfile({ photo: photoUrl });
+      const updated = await updateProfile({ photo: photoUrl });
       setProfile(updated);
     } catch (error) {
       console.error('Error uploading photo:', error);
@@ -34,8 +35,8 @@ function Profile() {
     }
   };
 
-  const handleSave = () => {
-    const updated = updateProfile(formData);
+  const handleSave = async () => {
+    const updated = await updateProfile(formData);
     setProfile(updated);
     setEditing(false);
   };
@@ -103,12 +104,17 @@ function Profile() {
 
             <div className="form-group">
               <label>Airline</label>
-              <input
-                type="text"
+              <select
                 value={formData.airline}
                 onChange={(e) => setFormData({ ...formData, airline: e.target.value })}
-                placeholder="e.g., United, Delta"
-              />
+              >
+                <option value="">Select airline</option>
+                {airlines.map(airline => (
+                  <option key={airline.code} value={airline.name}>
+                    {airline.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="form-group">
@@ -157,10 +163,20 @@ function Profile() {
               <p>{profile.name || 'Not set'}</p>
             </div>
 
-            <div className="profile-field">
-              <label>Airline</label>
-              <p>{profile.airline || 'Not set'}</p>
-            </div>
+            {profile.airline && (
+              <div className="profile-field">
+                <label>Airline</label>
+                <div className="airline-badge-container">
+                  <span 
+                    className="airline-badge"
+                    style={{ backgroundColor: getAirlineByName(profile.airline)?.color || '#64748B' }}
+                  >
+                    {getAirlineByName(profile.airline)?.code || '??'}
+                  </span>
+                  <p>{profile.airline}</p>
+                </div>
+              </div>
+            )}
 
             {profile.bio && (
               <div className="profile-field">

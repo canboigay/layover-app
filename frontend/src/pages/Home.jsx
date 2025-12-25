@@ -32,22 +32,22 @@ function Home() {
         </div>
 
         <div className="home-features">
-          <div className="feature">
-            <h3>Time-Limited</h3>
-            <p>Sessions auto-expire after your layover</p>
-          </div>
-          <div className="feature">
-            <h3>Location Sharing</h3>
-            <p>Optional real-time location with privacy controls</p>
-          </div>
-          <div className="feature">
-            <h3>Minimal Chat</h3>
-            <p>Quick coordination with your crew</p>
-          </div>
-          <div className="feature">
-            <h3>Privacy First</h3>
-            <p>All data deleted when session expires</p>
-          </div>
+          <button className="feature feature-btn" onClick={() => navigate('/profile')}>
+            <h3>My Profile</h3>
+            <p>Set up your info and airline</p>
+          </button>
+          <button className="feature feature-btn" onClick={() => navigate('/')}>
+            <h3>About</h3>
+            <p>Learn more about Layover</p>
+          </button>
+          <button className="feature feature-btn" onClick={() => navigate('/join')}>
+            <h3>Quick Join</h3>
+            <p>Enter session ID to join</p>
+          </button>
+          <button className="feature feature-btn" onClick={() => navigate('/compliance')}>
+            <h3>Help</h3>
+            <p>FAA compliance & guidelines</p>
+          </button>
         </div>
       </div>
     </div>
