@@ -40,7 +40,7 @@ io.on('connection', (socket) => handleSocketConnection(socket, io));
 const PORT = process.env.PORT || 3001;
 
 connectRedis().then(() => {
-  httpServer.listen(PORT, () => {
+  httpServer.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Server running on port ${PORT}`);
     console.log(`✅ Redis connected`);
   });
