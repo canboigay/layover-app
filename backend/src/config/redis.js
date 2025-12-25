@@ -1,16 +1,21 @@
 import { createClient } from 'redis';
 
-// Handle both redis:// and rediss:// protocols (Render uses rediss://)
+// Render provides Redis URL - handle TLS if using rediss://
 const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
 
-const redisClient = createClient({
-  url: redisUrl,
-  socket: {
-    // Enable TLS for rediss:// protocol
-    tls: redisUrl.startsWith('rediss://'),
+const clientOptions = {
+  url: redisUrl
+};
+
+// If using secure Redis (rediss://), enable TLS
+if (redisUrl.startsWith('rediss://')) {
+  clientOptions.socket = {
+    tls: true,
     rejectUnauthorized: false
-  }
-});
+  };
+}
+
+const redisClient = createClient(clientOptions);
 
 redisClient.on('error', (err) => console.error('Redis Client Error', err));
 
