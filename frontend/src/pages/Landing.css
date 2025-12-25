@@ -1,6 +1,6 @@
 .landing {
   min-height: 100vh;
-  background: linear-gradient(180deg, #E8F4F8 0%, #FFFFFF 100%);
+  background: #C9A868;
   position: relative;
   overflow: hidden;
 }
@@ -26,18 +26,21 @@
 }
 
 .stripe-1 {
-  top: 20%;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 107, 44, 0.12) 50%, transparent 100%);
+  top: 25%;
+  background: #C8102E;
+  opacity: 0.9;
 }
 
 .stripe-2 {
-  top: calc(20% + 120px);
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 184, 28, 0.18) 50%, transparent 100%);
+  top: calc(25% + 100px);
+  background: #FF6B2C;
+  opacity: 0.9;
 }
 
 .stripe-3 {
-  top: calc(20% + 240px);
-  background: linear-gradient(90deg, transparent 0%, rgba(200, 16, 46, 0.12) 50%, transparent 100%);
+  top: calc(25% + 200px);
+  background: #FFB81C;
+  opacity: 0.9;
 }
 
 .landing-hero {
@@ -60,15 +63,15 @@
 
 .logo-badge {
   display: inline-block;
-  background: #FFB81C;
-  color: #000;
+  background: #000;
+  color: #FFB81C;
   padding: 0.5rem 1.5rem;
   font-family: 'Bebas Neue', sans-serif;
   font-size: 0.875rem;
   letter-spacing: 0.2em;
-  border: 3px solid #000;
+  border: 3px solid #FFF;
   margin-bottom: 1rem;
-  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4);
   transform: rotate(-2deg);
 }
 
@@ -87,29 +90,30 @@
 }
 
 .title-top {
-  color: #FF6B2C;
-  text-shadow: 6px 6px 0 rgba(0, 0, 0, 0.1);
+  color: #C8102E;
+  text-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2);
 }
 
 .title-bottom {
-  color: #000;
-  text-shadow: 6px 6px 0 rgba(255, 107, 44, 0.2);
+  color: #FFF;
+  text-shadow: 6px 6px 0 rgba(200, 16, 46, 0.4);
   margin-top: -0.2em;
 }
 
 .hero-subtitle {
   font-family: 'Bebas Neue', sans-serif;
   font-size: clamp(1.5rem, 4vw, 2.5rem);
-  color: #FF6B2C;
+  color: #FFF;
   margin: 1rem 0 2rem 0;
   letter-spacing: 0.1em;
   font-weight: 400;
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
 }
 
 .btn-cta {
-  background: #FF6B2C;
+  background: #C8102E;
   color: white;
-  border: 3px solid #000;
+  border: 4px solid #000;
   padding: 1.25rem 3rem;
   font-size: 1.5rem;
   font-weight: 700;
@@ -149,14 +153,14 @@
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1;
-  opacity: 0.05;
+  opacity: 0.08;
   pointer-events: none;
 }
 
 .plane-icon {
   width: 500px;
   height: 500px;
-  color: #000;
+  color: #FFF;
   animation: float 6s ease-in-out infinite;
 }
 
@@ -241,7 +245,8 @@
 .cta-section {
   padding: 6rem 2rem;
   text-align: center;
-  background: linear-gradient(180deg, #FFFFFF 0%, #E8F4F8 100%);
+  background: #FFF;
+  border-top: 6px solid #000;
 }
 
 .cta-section h2 {
