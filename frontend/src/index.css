@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@700;900&display=swap');
+
+:root {
+  --primary: #FF6B2C;
+  --primary-dark: #E85A1F;
+  --primary-light: #FFA374;
+  --secondary: #FFB81C;
+  --accent: #C8102E;
+  --success: #10b981;
+  --warning: #FFB81C;
+  --error: #C8102E;
+  --dark: #2C2A29;
+  --dark-lighter: #3D3935;
+  --gray: #6B6B6B;
+  --gray-light: #D1D3D4;
+  --gray-lighter: #F7F7F7;
+  --white: #ffffff;
+  --cream: #FFF5E6;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.18);
+  --radius: 8px;
+  --radius-lg: 12px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #E8F4F8;
+  color: var(--dark);
+  line-height: 1.6;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius);
+}
