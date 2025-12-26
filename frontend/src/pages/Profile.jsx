@@ -56,14 +56,15 @@ function Profile() {
     <div className="profile-page">
       <div className="profile-header">
         <button className="btn-back" onClick={() => navigate('/')}>
-          ← Back
+          ←
         </button>
         <h1>Profile</h1>
-        {!editing && (
-          <button className="btn-edit" onClick={() => setEditing(true)}>
-            Edit
-          </button>
-        )}
+        <button 
+          className="btn-edit" 
+          onClick={() => editing ? handleSave() : setEditing(true)}
+        >
+          {editing ? 'Save' : 'Edit'}
+        </button>
       </div>
 
       <div className="profile-content">
