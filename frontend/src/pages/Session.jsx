@@ -39,7 +39,9 @@ function Session() {
   const [timeRemaining, setTimeRemaining] = useState('');
   const [showQR, setShowQR] = useState(false);
   const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
   const locationIntervalRef = useRef(null);
+  const [userScrolledUp, setUserScrolledUp] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem('layover_session');
@@ -75,8 +77,20 @@ function Session() {
   }, [session]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    // Only auto-scroll if user hasn't manually scrolled up
+    if (!userScrolledUp && messagesEndRef.current) {
+      // Small delay to ensure DOM has updated
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }, 100);
+    }
+  }, [messages, userScrolledUp]);
+
+  const handleScroll = (e) => {
+    const container = e.target;
+    const isAtBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 50;
+    setUserScrolledUp(!isAtBottom);
+  };
 
   const loadSession = async () => {
     try {
@@ -373,7 +387,7 @@ function Session() {
       <div className="session-content">
         {activeTab === 'chat' && (
           <div className="chat-view">
-            <div className="messages">
+            <div className="messages" ref={messagesContainerRef} onScroll={handleScroll}>
               {messages.map((msg) => (
                 <div 
                   key={msg.messageId} 
