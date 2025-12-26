@@ -1,8 +1,44 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
 
 function Home() {
   const navigate = useNavigate();
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [isInstalled, setIsInstalled] = useState(false);
+  const [showInstallBanner, setShowInstallBanner] = useState(true);
+
+  useEffect(() => {
+    // Check if already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setIsInstalled(true);
+      setShowInstallBanner(false);
+    }
+
+    // Listen for install prompt
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+      setShowInstallBanner(false);
+    }
+  };
 
   return (
     <div className="home">
@@ -34,6 +70,36 @@ function Home() {
             Join Session
           </button>
         </div>
+
+        {!isInstalled && showInstallBanner && (
+          <div className="pwa-install-banner">
+            <div className="pwa-install-content">
+              <div className="pwa-icon">📱</div>
+              <div className="pwa-text">
+                <h3>Install Layover App</h3>
+                <p>Add to home screen for quick access</p>
+              </div>
+            </div>
+            {deferredPrompt ? (
+              <button className="btn-install" onClick={handleInstallClick}>
+                Install
+              </button>
+            ) : (
+              <div className="pwa-instructions">
+                <p className="pwa-hint">
+                  iOS: Tap <span className="share-icon">⎋</span> then "Add to Home Screen"
+                </p>
+              </div>
+            )}
+            <button 
+              className="btn-dismiss"
+              onClick={() => setShowInstallBanner(false)}
+              aria-label="Dismiss"
+            >
+              ✕
+            </button>
+          </div>
+        )}
 
         <div className="home-features">
           <button className="feature feature-btn" onClick={() => navigate('/profile')}>
