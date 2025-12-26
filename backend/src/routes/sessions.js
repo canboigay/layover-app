@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid';
 import QRCode from 'qrcode';
 import { redisClient } from '../config/redis.js';
 import { rateLimit } from 'express-rate-limit';
+import { calculateLayoverDuration } from '../services/flightLookup.js';
 
 const router = express.Router();
 
@@ -16,25 +17,66 @@ router.use(limiter);
 // Create new layover session
 router.post('/create', async (req, res) => {
   try {
-    const { duration, location, creatorName, airline, pin } = req.body;
+    const { duration, location, creatorName, airline, pin, arrivalFlight, departureFlight } = req.body;
 
-    if (!duration || !creatorName) {
-      return res.status(400).json({ error: 'Duration and creator name required' });
+    if (!creatorName) {
+      return res.status(400).json({ error: 'Creator name required' });
+    }
+
+    let finalDuration = duration;
+    let flightInfo = null;
+    let expiresAt;
+
+    // If both flight numbers are provided, calculate duration from flights
+    if (arrivalFlight && departureFlight) {
+      const layoverResult = await calculateLayoverDuration(arrivalFlight, departureFlight);
+      
+      if (layoverResult.success) {
+        finalDuration = layoverResult.sessionDuration;
+        flightInfo = {
+          arrival: layoverResult.arrival,
+          departure: layoverResult.departure,
+          layoverMinutes: layoverResult.layoverMinutes
+        };
+        // Use calculated expiry time
+        expiresAt = new Date(layoverResult.expiresAt).getTime();
+      } else {
+        // Flight lookup failed, require manual duration
+        if (!duration) {
+          return res.status(400).json({ 
+            error: 'Could not look up flights. Please enter duration manually.',
+            flightError: layoverResult.error 
+          });
+        }
+      }
+    }
+
+    // If no flights provided or flight lookup failed, use manual duration
+    if (!finalDuration) {
+      if (!duration) {
+        return res.status(400).json({ error: 'Duration required when not using flight numbers' });
+      }
+      finalDuration = duration;
     }
 
     const sessionId = nanoid(10);
     const userId = nanoid(12);
     const now = Date.now();
-    const expiresAt = now + (duration * 60 * 1000);
+    
+    // Use calculated expiresAt or calculate from duration
+    if (!expiresAt) {
+      expiresAt = now + (finalDuration * 60 * 1000);
+    }
 
     const sessionData = {
       sessionId,
       createdAt: now,
       expiresAt,
-      duration,
+      duration: finalDuration,
       creatorId: userId,
       location: location || {},
       pin: pin || null,
+      flightInfo,
       members: [{
         userId,
         name: creatorName,
@@ -44,7 +86,7 @@ router.post('/create', async (req, res) => {
       }]
     };
 
-    const ttl = Math.floor(duration * 60);
+    const ttl = Math.floor(finalDuration * 60);
     await redisClient.setEx(
       `session:${sessionId}`,
       ttl,
@@ -66,7 +108,8 @@ router.post('/create', async (req, res) => {
       userId,
       qrCode,
       expiresAt,
-      joinUrl: qrData.joinUrl
+      joinUrl: qrData.joinUrl,
+      flightInfo
     });
   } catch (error) {
     console.error('Error creating session:', error);

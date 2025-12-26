@@ -9,10 +9,15 @@ function CreateSession() {
     name: '',
     airline: '',
     duration: 240,
-    pin: ''
+    pin: '',
+    arrivalFlight: '',
+    departureFlight: ''
   });
+  const [useFlights, setUseFlights] = useState(false);
+  const [calculatedInfo, setCalculatedInfo] = useState(null);
   const [loading, setLoading] = useState(false);
   const [sessionData, setSessionData] = useState(null);
+  const [flightError, setFlightError] = useState('');
 
   const durationOptions = [
     { value: 120, label: '2 hours' },
@@ -25,17 +30,28 @@ function CreateSession() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setFlightError('');
 
     try {
       const location = await getCurrentLocation();
       
-      const data = await createSession({
+      const payload = {
         creatorName: formData.name,
         airline: formData.airline,
-        duration: formData.duration,
         pin: formData.pin || null,
         location
-      });
+      };
+
+      // Add flight numbers if using flight-based duration
+      if (useFlights && formData.arrivalFlight && formData.departureFlight) {
+        payload.arrivalFlight = formData.arrivalFlight;
+        payload.departureFlight = formData.departureFlight;
+      } else {
+        // Use manual duration
+        payload.duration = formData.duration;
+      }
+
+      const data = await createSession(payload);
 
       setSessionData(data);
       localStorage.setItem('layover_session', JSON.stringify({
@@ -44,7 +60,14 @@ function CreateSession() {
       }));
     } catch (error) {
       console.error('Error creating session:', error);
-      alert('Failed to create session. Please try again.');
+      const errorMsg = error.response?.data?.error || 'Failed to create session. Please try again.';
+      const flightErr = error.response?.data?.flightError;
+      
+      if (flightErr) {
+        setFlightError(`${errorMsg} (${flightErr})`);
+      } else {
+        alert(errorMsg);
+      }
     } finally {
       setLoading(false);
     }
@@ -97,6 +120,20 @@ function CreateSession() {
           </div>
 
           <div className="session-info">
+            {sessionData.flightInfo && (
+              <div className="flight-info">
+                <p className="info-label">Your Layover</p>
+                <p className="flight-detail">
+                  Arriving: {sessionData.flightInfo.arrival.flight} at {sessionData.flightInfo.arrival.airport}
+                </p>
+                <p className="flight-detail">
+                  Departing: {sessionData.flightInfo.departure.flight} at {sessionData.flightInfo.departure.airport}
+                </p>
+                <p className="layover-duration">
+                  {Math.floor(sessionData.flightInfo.layoverMinutes / 60)}h {sessionData.flightInfo.layoverMinutes % 60}m layover
+                </p>
+              </div>
+            )}
             <p>Share this QR code or link with your crew</p>
             {sessionData.pin && (
               <p className="pin-info">PIN: <strong>{sessionData.pin}</strong></p>
@@ -144,16 +181,65 @@ function CreateSession() {
           </div>
 
           <div className="form-group">
-            <label>Layover Duration</label>
-            <select
-              value={formData.duration}
-              onChange={(e) => setFormData({ ...formData, duration: Number(e.target.value) })}
-            >
-              {durationOptions.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
+            <label className="toggle-label">
+              <input
+                type="checkbox"
+                checked={useFlights}
+                onChange={(e) => {
+                  setUseFlights(e.target.checked);
+                  setFlightError('');
+                  setCalculatedInfo(null);
+                }}
+              />
+              Calculate duration from flight numbers
+            </label>
           </div>
+
+          {useFlights ? (
+            <>
+              <div className="form-group">
+                <label>Arrival Flight Number</label>
+                <input
+                  type="text"
+                  value={formData.arrivalFlight}
+                  onChange={(e) => setFormData({ ...formData, arrivalFlight: e.target.value.toUpperCase() })}
+                  placeholder="e.g., AA1234"
+                  required={useFlights}
+                />
+                <small>The flight you're arriving on</small>
+              </div>
+
+              <div className="form-group">
+                <label>Departure Flight Number</label>
+                <input
+                  type="text"
+                  value={formData.departureFlight}
+                  onChange={(e) => setFormData({ ...formData, departureFlight: e.target.value.toUpperCase() })}
+                  placeholder="e.g., AA5678"
+                  required={useFlights}
+                />
+                <small>The flight you're departing on</small>
+              </div>
+
+              {flightError && (
+                <div className="flight-error">
+                  {flightError}
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="form-group">
+              <label>Layover Duration</label>
+              <select
+                value={formData.duration}
+                onChange={(e) => setFormData({ ...formData, duration: Number(e.target.value) })}
+              >
+                {durationOptions.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div className="form-group">
             <label>PIN (Optional)</label>
