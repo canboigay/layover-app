@@ -1,5 +1,8 @@
 import { redisClient } from '../config/redis.js';
 
+// Rate limiting map for messages
+const messageRateLimits = new Map();
+
 export const handleSocketConnection = (socket, io) => {
   console.log('Client connected:', socket.id);
 
@@ -40,6 +43,20 @@ export const handleSocketConnection = (socket, io) => {
 
   socket.on('send_message', async ({ sessionId, userId, message, type, imageData }) => {
     try {
+      // Rate limiting - 10 messages per minute per user
+      const rateLimitKey = `${sessionId}:${userId}`;
+      const now = Date.now();
+      const userLimits = messageRateLimits.get(rateLimitKey) || [];
+      const recentMessages = userLimits.filter(time => now - time < 60000);
+      
+      if (recentMessages.length >= 10) {
+        socket.emit('error', { message: 'Too many messages. Please slow down.' });
+        return;
+      }
+      
+      recentMessages.push(now);
+      messageRateLimits.set(rateLimitKey, recentMessages);
+      
       const messageType = type || 'text';
       
       // Validate message based on type
@@ -47,6 +64,12 @@ export const handleSocketConnection = (socket, io) => {
         return;
       }
       if (messageType === 'image' && !imageData) {
+        return;
+      }
+      
+      // Validate image size (max 300KB base64)
+      if (messageType === 'image' && imageData.length > 300000) {
+        socket.emit('error', { message: 'Image too large. Maximum 300KB.' });
         return;
       }
 
@@ -126,10 +149,11 @@ export const handleSocketConnection = (socket, io) => {
     }
   });
 
-  socket.on('get_messages', async ({ sessionId }) => {
+  socket.on('get_messages', async ({ sessionId, limit = 100 }) => {
     try {
       const messagesKey = `messages:${sessionId}`;
-      const messages = await redisClient.lRange(messagesKey, 0, -1);
+      // Get last N messages (most recent)
+      const messages = await redisClient.lRange(messagesKey, -limit, -1);
       
       const parsedMessages = messages.map(msg => JSON.parse(msg));
       socket.emit('messages_history', { messages: parsedMessages });
@@ -142,10 +166,17 @@ export const handleSocketConnection = (socket, io) => {
     console.log('Client disconnected:', socket.id);
     
     if (socket.sessionId && socket.userId) {
+      // Cleanup rate limit data
+      const rateLimitKey = `${socket.sessionId}:${socket.userId}`;
+      messageRateLimits.delete(rateLimitKey);
+      
       io.to(socket.sessionId).emit('user_disconnected', {
         userId: socket.userId,
         timestamp: Date.now()
       });
     }
+    
+    // Remove all listeners
+    socket.removeAllListeners();
   });
 };

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { QRCodeSVG } from 'qrcode.react';
@@ -87,13 +87,13 @@ function Session() {
     }
   }, [messages, userScrolledUp]);
 
-  const handleScroll = (e) => {
+  const handleScroll = useCallback((e) => {
     const container = e.target;
     const isAtBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 50;
     setUserScrolledUp(!isAtBottom);
-  };
+  }, []);
 
-  const loadSession = async () => {
+  const loadSession = useCallback(async () => {
     try {
       const data = await getSession(sessionId);
       setSession(data);
@@ -102,7 +102,7 @@ function Session() {
       alert('Session not found or expired');
       navigate('/');
     }
-  };
+  }, [sessionId, navigate]);
 
   const initializeSocket = (uid) => {
     const socket = socketService.connect();
@@ -132,7 +132,7 @@ function Session() {
         timestamp: Date.now()
       };
       setMessages(prev => [...prev, joinMsg]);
-      loadSession();
+      // Session will be updated via socket, no need to reload
     });
 
     socket.on('location_updated', ({ userId: updatedUserId, location, sharing }) => {
@@ -148,7 +148,7 @@ function Session() {
     });
 
     socket.on('user_disconnected', () => {
-      loadSession();
+      // Session updates handled via socket events
     });
   };
 
@@ -206,11 +206,11 @@ function Session() {
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
           
-          // Compress to max 500KB
-          let quality = 0.8;
+          // Compress to max 200KB for better performance
+          let quality = 0.7;
           let dataUrl = canvas.toDataURL('image/jpeg', quality);
           
-          while (dataUrl.length > 500000 && quality > 0.1) {
+          while (dataUrl.length > 200000 && quality > 0.1) {
             quality -= 0.1;
             dataUrl = canvas.toDataURL('image/jpeg', quality);
           }
@@ -303,7 +303,7 @@ function Session() {
     }
   };
 
-  const getMapCenter = () => {
+  const getMapCenter = useMemo(() => {
     const membersWithLocation = session?.members.filter(m => 
       m.locationSharing && m.lastLocation?.lat && m.lastLocation?.lng
     ) || [];
@@ -316,14 +316,14 @@ function Session() {
     const avgLng = membersWithLocation.reduce((sum, m) => sum + m.lastLocation.lng, 0) / membersWithLocation.length;
     
     return [avgLat, avgLng];
-  };
+  }, [session]);
 
-  const formatTimestamp = (timestamp) => {
+  const formatTimestamp = useCallback((timestamp) => {
     const date = new Date(timestamp);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
+  }, []);
 
-  const formatLocationTime = (timestamp) => {
+  const formatLocationTime = useCallback((timestamp) => {
     const now = Date.now();
     const diff = now - timestamp;
     const minutes = Math.floor(diff / (1000 * 60));
@@ -332,7 +332,7 @@ function Session() {
     if (minutes < 60) return `${minutes}m ago`;
     const hours = Math.floor(minutes / 60);
     return `${hours}h ago`;
-  };
+  }, []);
 
   const handleShareLink = async () => {
     const joinUrl = `${window.location.origin}/join/${sessionId}`;
