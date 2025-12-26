@@ -55,7 +55,7 @@ function Profile() {
   return (
     <div className="profile-page">
       <div className="profile-header">
-        <button className="btn-back" onClick={() => navigate('/')}>
+        <button className="btn-back" onClick={() => navigate('/home')}>
           ←
         </button>
         <h1>Profile</h1>

@@ -8,7 +8,7 @@ const Compliance = () => {
   return (
     <div className="compliance-container">
       <div className="compliance-header">
-        <button onClick={() => navigate('/')} className="btn-back">← Back</button>
+        <button onClick={() => navigate('/home')} className="btn-back">← Back</button>
         <h1>FAA COMPLIANCE & GUIDELINES</h1>
         <div className="compliance-badge">EST. 2025</div>
       </div>

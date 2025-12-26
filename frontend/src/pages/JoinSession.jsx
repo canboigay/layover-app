@@ -100,9 +100,9 @@ function JoinSession() {
 
               <button
                 className="btn btn-link"
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/home')}
               >
-                Back to Home
+                ← Back
               </button>
             </div>
           </div>
@@ -168,9 +168,9 @@ function JoinSession() {
           <button 
             type="button" 
             className="btn btn-link"
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/home')}
           >
-            Back to Home
+            ← Back
           </button>
         </form>
       </div>
