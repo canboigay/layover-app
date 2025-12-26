@@ -27,8 +27,8 @@ class SocketService {
     this.socket?.emit('join_session', { sessionId, userId });
   }
 
-  sendMessage(sessionId, userId, message) {
-    this.socket?.emit('send_message', { sessionId, userId, message });
+  sendMessage(sessionId, userId, message, type = 'text', imageData = null) {
+    this.socket?.emit('send_message', { sessionId, userId, message, type, imageData });
   }
 
   updateLocation(sessionId, userId, location, sharing) {

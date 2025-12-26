@@ -41,6 +41,7 @@ function Session() {
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
   const locationIntervalRef = useRef(null);
+  const fileInputRef = useRef(null);
   const [userScrolledUp, setUserScrolledUp] = useState(false);
 
   useEffect(() => {
@@ -174,8 +175,77 @@ function Session() {
     e.preventDefault();
     if (!newMessage.trim() || !userId) return;
 
-    socketService.sendMessage(sessionId, userId, newMessage);
+    socketService.sendMessage(sessionId, userId, newMessage, 'text');
     setNewMessage('');
+  };
+
+  const compressImage = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          // Max dimensions
+          const maxDim = 1200;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = (height * maxDim) / width;
+              width = maxDim;
+            } else {
+              width = (width * maxDim) / height;
+              height = maxDim;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Compress to max 500KB
+          let quality = 0.8;
+          let dataUrl = canvas.toDataURL('image/jpeg', quality);
+          
+          while (dataUrl.length > 500000 && quality > 0.1) {
+            quality -= 0.1;
+            dataUrl = canvas.toDataURL('image/jpeg', quality);
+          }
+          
+          resolve(dataUrl);
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handlePhotoSelect = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !userId) return;
+    
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file');
+      return;
+    }
+    
+    try {
+      const compressedImage = await compressImage(file);
+      socketService.sendMessage(sessionId, userId, 'Photo', 'image', compressedImage);
+      
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    } catch (error) {
+      console.error('Error sending photo:', error);
+      alert('Failed to send photo');
+    }
   };
 
   const toggleLocationSharing = async () => {
@@ -395,6 +465,22 @@ function Session() {
                 >
                   {msg.type === 'system' ? (
                     <p className="system-text">{msg.message}</p>
+                  ) : msg.type === 'image' ? (
+                    <>
+                      <div className="message-header">
+                        <span className="message-name">{msg.name}</span>
+                        <span className="message-time">{formatTimestamp(msg.timestamp)}</span>
+                      </div>
+                      <img 
+                        src={msg.imageData} 
+                        alt="Shared photo" 
+                        className="message-image"
+                        onClick={(e) => window.open(msg.imageData, '_blank')}
+                      />
+                      {msg.message && msg.message !== 'Photo' && (
+                        <p className="message-text">{msg.message}</p>
+                      )}
+                    </>
                   ) : (
                     <>
                       <div className="message-header">
@@ -410,6 +496,22 @@ function Session() {
             </div>
 
             <form onSubmit={handleSendMessage} className="message-form">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={handlePhotoSelect}
+                style={{ display: 'none' }}
+              />
+              <button 
+                type="button" 
+                className="btn-photo"
+                onClick={() => fileInputRef.current?.click()}
+                title="Send photo"
+              >
+                📷
+              </button>
               <input
                 type="text"
                 value={newMessage}

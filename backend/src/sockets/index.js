@@ -38,9 +38,15 @@ export const handleSocketConnection = (socket, io) => {
     }
   });
 
-  socket.on('send_message', async ({ sessionId, userId, message }) => {
+  socket.on('send_message', async ({ sessionId, userId, message, type, imageData }) => {
     try {
-      if (!message || message.trim().length === 0) {
+      const messageType = type || 'text';
+      
+      // Validate message based on type
+      if (messageType === 'text' && (!message || message.trim().length === 0)) {
+        return;
+      }
+      if (messageType === 'image' && !imageData) {
         return;
       }
 
@@ -63,7 +69,9 @@ export const handleSocketConnection = (socket, io) => {
         messageId: Date.now() + Math.random(),
         userId,
         name: member.name,
-        message: message.trim().substring(0, 500),
+        type: messageType,
+        message: messageType === 'text' ? message.trim().substring(0, 500) : (message || ''),
+        imageData: messageType === 'image' ? imageData : undefined,
         timestamp: Date.now()
       };
 
