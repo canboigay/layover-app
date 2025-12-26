@@ -32,7 +32,12 @@ app.use('/api/sessions', sessionRoutes);
 app.use('/api/profiles', profileRoutes);
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', redis: redisClient.isOpen });
+  res.json({ 
+    status: 'ok', 
+    redis: redisClient.isOpen,
+    hasAviationStackKey: !!process.env.AVIATIONSTACK_API_KEY,
+    keyLength: process.env.AVIATIONSTACK_API_KEY?.length || 0
+  });
 });
 
 // Socket.io connection handling
