@@ -17,6 +17,33 @@
   z-index: 1;
 }
 
+.btn-back-splash {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid #000;
+  color: #1e293b;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+.btn-back-splash:hover {
+  background: white;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+}
+
+.btn-back-splash:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+}
+
 .home-header {
   margin-bottom: 3rem;
   position: relative;
@@ -160,7 +187,7 @@
 
 .home-features {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   margin-top: 2rem;
   max-width: 600px;
@@ -200,7 +227,6 @@
 .feature:nth-child(1) { --delay: 0s; }
 .feature:nth-child(2) { --delay: 0.1s; }
 .feature:nth-child(3) { --delay: 0.2s; }
-.feature:nth-child(4) { --delay: 0.3s; }
 
 .feature:hover {
   transform: translateY(-4px) rotate(-1deg);

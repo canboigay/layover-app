@@ -7,6 +7,10 @@ function Home() {
   return (
     <div className="home">
       <div className="home-container">
+        <button className="btn-back-splash" onClick={() => navigate('/')}>
+          ←
+        </button>
+        
         <div className="home-header">
           <button className="btn-profile" onClick={() => navigate('/profile')}>
             Profile
@@ -35,10 +39,6 @@ function Home() {
           <button className="feature feature-btn" onClick={() => navigate('/profile')}>
             <h3>My Profile</h3>
             <p>Set up your info and airline</p>
-          </button>
-          <button className="feature feature-btn" onClick={() => navigate('/')}>
-            <h3>About</h3>
-            <p>Learn more about Layover</p>
           </button>
           <button className="feature feature-btn" onClick={() => navigate('/join')}>
             <h3>Quick Join</h3>
