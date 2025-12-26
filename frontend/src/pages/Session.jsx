@@ -531,11 +531,12 @@ function Session() {
             <div className="map-notice">
               <p>Location sharing is voluntary and for safety coordination only</p>
             </div>
-            <MapContainer 
-              center={getMapCenter()} 
-              zoom={13} 
-              style={{ width: '100%' }}
-            >
+            <div className="map-container-wrapper">
+              <MapContainer 
+                center={getMapCenter()} 
+                zoom={13}
+                style={{ height: '100%', width: '100%' }}
+              >
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -574,7 +575,8 @@ function Session() {
                   </Marker>
                 );
               })}
-            </MapContainer>
+              </MapContainer>
+            </div>
           </div>
         )}
 
