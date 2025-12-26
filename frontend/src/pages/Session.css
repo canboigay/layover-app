@@ -344,6 +344,14 @@
 .map-view {
   height: 100%;
   position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.map-view .leaflet-container {
+  flex: 1;
+  min-height: 400px;
+  z-index: 1;
 }
 
 .map-notice {

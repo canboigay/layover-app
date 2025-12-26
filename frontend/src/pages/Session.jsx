@@ -534,7 +534,7 @@ function Session() {
             <MapContainer 
               center={getMapCenter()} 
               zoom={13} 
-              style={{ height: '100%', width: '100%' }}
+              style={{ width: '100%' }}
             >
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
