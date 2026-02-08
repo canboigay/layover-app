@@ -227,9 +227,23 @@ When contributing, ensure:
 3. Security measures not compromised
 4. Ephemeral nature of data maintained
 
-## License
-
-[Add your license here]
+Piggy Benissy says: laidOver
+#
+#        _._ _..._ .-',     _.._(``))
+#       '-. `     '  /-._.-'    ',/
+#          )         \            '.
+#         / _    _    |             \
+#        |  a    a    /              |
+#        \   .-.                     ;
+#         '-('' ).-'       ,'       ;
+#            '-;           |      .'
+#               \           \    /
+#               | 7  .__  _.-\   \
+#               | |  |  ``    |    |
+#              /,_|  |   /,_/    /
+#                 /,_/      '----'
+#
+# - @SimeonGarratt
 
 ## Support
 
